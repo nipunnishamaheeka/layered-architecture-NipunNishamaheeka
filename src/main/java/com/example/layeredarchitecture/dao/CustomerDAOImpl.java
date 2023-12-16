@@ -16,10 +16,10 @@ public class CustomerDAOImpl {
 
         List<CustomerDTO> list = new ArrayList<>();
         while(rst.next()){
-            CustomerDTO customerDTO = new CustomerDTO();
-            rst.getString("id");
-            rst.getString("name");
-            rst.getString("address");
+            CustomerDTO customerDTO = new CustomerDTO(
+            rst.getString("id"),
+            rst.getString("name"),
+            rst.getString("address"));
 
             list.add(customerDTO);
 
@@ -51,5 +51,11 @@ public class CustomerDAOImpl {
         pstm.setString(1, id);
         int i = pstm.executeUpdate();
         return i>0;
+    }
+    public boolean exitsCustomer(String id) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getDbConnection().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT id FROM Customer WHERE id=?");
+        pstm.setString(1, id);
+        return pstm.executeQuery().next();
     }
 }
