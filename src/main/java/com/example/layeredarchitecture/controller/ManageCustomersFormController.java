@@ -73,7 +73,7 @@ public class ManageCustomersFormController {
 //            ResultSet rst = stm.executeQuery("SELECT * FROM Customer");
 
             CustomerDAO customerDAO = new CustomerDAOImpl();
-            List<CustomerDTO> allCustomer = customerDAO.getAllCustomers();
+            List<CustomerDTO> allCustomer = customerDAO.getAll();
 
             for (CustomerDTO dto : allCustomer) {
                 tblCustomers.getItems().add(new CustomerTM(dto.getId(), dto.getName(), dto.getAddress()));
@@ -150,7 +150,7 @@ public class ManageCustomersFormController {
                     new Alert(Alert.AlertType.ERROR, id + " already exists").show();
                 }
                 CustomerDAO customerDAO = new CustomerDAOImpl();
-                boolean saveCustomer = customerDAO.saveCustomer(new CustomerDTO(id, name, address));
+                boolean saveCustomer = customerDAO.save(new CustomerDTO(id, name, address));
                 if (saveCustomer) {
                     tblCustomers.getItems().add(new CustomerTM(id, name, address));
                 }
@@ -169,7 +169,7 @@ public class ManageCustomersFormController {
                     new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
                 }
                 CustomerDAO customerDAO = new CustomerDAOImpl();
-                customerDAO.updateCustomer(new CustomerDTO(id, name, address));
+                customerDAO.update(new CustomerDTO(id, name, address));
 
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
@@ -189,7 +189,7 @@ public class ManageCustomersFormController {
 
     boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
         CustomerDAO customerDAO = new CustomerDAOImpl();
-        return customerDAO.exitsCustomer(id);
+        return customerDAO.exits(id);
 //        Connection connection = DBConnection.getDbConnection().getConnection();
 //        PreparedStatement pstm = connection.prepareStatement("SELECT id FROM Customer WHERE id=?");
 //        pstm.setString(1, id);
@@ -205,7 +205,7 @@ public class ManageCustomersFormController {
                 new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
             }
             CustomerDAO customerDAO = new CustomerDAOImpl();
-            customerDAO.deleteCustomer(id);
+            customerDAO.delete(id);
 
             tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
             tblCustomers.getSelectionModel().clearSelection();

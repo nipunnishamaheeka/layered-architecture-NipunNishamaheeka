@@ -72,7 +72,7 @@ public class ManageItemsFormController {
         try {
             /*Get all items*/
             ItemDAO itemDAO = new ItemDAOImpl();
-            List<ItemDTO> allItems = itemDAO.getAllItems();
+            List<ItemDTO> allItems = itemDAO.getAll();
 
             for (ItemDTO dto : allItems) {
                 tblItems.getItems().add(new ItemTM(dto.getCode(), dto.getDescription(), dto.getUnitPrice(),dto.getQtyOnHand()));
@@ -140,7 +140,7 @@ public class ManageItemsFormController {
             }
 
            ItemDAO itemDAO = new ItemDAOImpl();
-            itemDAO.deleteItems(code);
+            itemDAO.delete(code);
 
             tblItems.getItems().remove(tblItems.getSelectionModel().getSelectedItem());
             tblItems.getSelectionModel().clearSelection();
@@ -181,7 +181,7 @@ public class ManageItemsFormController {
                 }
                 //Save Item
                 ItemDAO itemDAO = new ItemDAOImpl();
-                boolean saveItems = itemDAO.saveItems(new ItemDTO(code, description, unitPrice, qtyOnHand));
+                boolean saveItems = itemDAO.save(new ItemDTO(code, description, unitPrice, qtyOnHand));
                 if(saveItems) {
                     tblItems.getItems().add(new ItemTM(code, description, unitPrice, qtyOnHand));
                 }
@@ -198,7 +198,7 @@ public class ManageItemsFormController {
                 }
 
                 ItemDAO itemDAO = new ItemDAOImpl();
-                itemDAO.updateItems(new ItemDTO(code, description, unitPrice, qtyOnHand));
+                itemDAO.update(new ItemDTO(code, description, unitPrice, qtyOnHand));
                 ItemTM selectedItem = tblItems.getSelectionModel().getSelectedItem();
                 selectedItem.setDescription(description);
                 selectedItem.setQtyOnHand(qtyOnHand);
@@ -218,7 +218,7 @@ public class ManageItemsFormController {
     private boolean existItem(String code) throws SQLException, ClassNotFoundException {
 
         ItemDAO itemDAO = new ItemDAOImpl();
-        return itemDAO.exitsItems(code);
+        return itemDAO.exits(code);
     }
 
     private String generateNewId() {
