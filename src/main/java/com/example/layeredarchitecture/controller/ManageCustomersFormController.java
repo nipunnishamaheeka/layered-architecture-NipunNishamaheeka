@@ -1,7 +1,7 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.dao.CustomerDAO;
-import com.example.layeredarchitecture.dao.impl.CustomerDAOImpl;
+import com.example.layeredarchitecture.bo.CustomerBO;
+import com.example.layeredarchitecture.bo.impl.CustomerBOImpl;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.view.tdm.CustomerTM;
 import com.jfoenix.controls.JFXButton;
@@ -36,7 +36,7 @@ public class ManageCustomersFormController {
     public TextField txtCustomerAddress;
     public TableView<CustomerTM> tblCustomers;
     public JFXButton btnAddNewCustomer;
-
+    private CustomerBO  customerBO = new CustomerBOImpl();
     public void initialize() {
         tblCustomers.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
         tblCustomers.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -72,8 +72,8 @@ public class ManageCustomersFormController {
 //            Statement stm = connection.createStatement();
 //            ResultSet rst = stm.executeQuery("SELECT * FROM Customer");
 
-            CustomerDAO customerDAO = new CustomerDAOImpl();
-            List<CustomerDTO> allCustomer = customerDAO.getAll();
+
+            List<CustomerDTO> allCustomer = customerBO.getAll();
 
             for (CustomerDTO dto : allCustomer) {
                 tblCustomers.getItems().add(new CustomerTM(dto.getId(), dto.getName(), dto.getAddress()));
@@ -149,8 +149,8 @@ public class ManageCustomersFormController {
                 if (existCustomer(id)) {
                     new Alert(Alert.AlertType.ERROR, id + " already exists").show();
                 }
-                CustomerDAO customerDAO = new CustomerDAOImpl();
-                boolean saveCustomer = customerDAO.save(new CustomerDTO(id, name, address));
+
+                boolean saveCustomer = customerBO.save(new CustomerDTO(id, name, address));
                 if (saveCustomer) {
                     tblCustomers.getItems().add(new CustomerTM(id, name, address));
                 }
@@ -168,8 +168,7 @@ public class ManageCustomersFormController {
                 if (!existCustomer(id)) {
                     new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
                 }
-                CustomerDAO customerDAO = new CustomerDAOImpl();
-                customerDAO.update(new CustomerDTO(id, name, address));
+               customerBO.update(new CustomerDTO(id, name, address));
 
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
@@ -188,8 +187,8 @@ public class ManageCustomersFormController {
 
 
     boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
-        CustomerDAO customerDAO = new CustomerDAOImpl();
-        return customerDAO.exits(id);
+
+        return customerBO.exits(id);
 //        Connection connection = DBConnection.getDbConnection().getConnection();
 //        PreparedStatement pstm = connection.prepareStatement("SELECT id FROM Customer WHERE id=?");
 //        pstm.setString(1, id);
@@ -204,8 +203,8 @@ public class ManageCustomersFormController {
             if (!existCustomer(id)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
             }
-            CustomerDAO customerDAO = new CustomerDAOImpl();
-            customerDAO.delete(id);
+
+            customerBO.delete(id);
 
             tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
             tblCustomers.getSelectionModel().clearSelection();
@@ -220,8 +219,7 @@ public class ManageCustomersFormController {
 
     private String generateNewId() {
         try {
-            CustomerDAO customerDAO = new CustomerDAOImpl();
-            return customerDAO.generateNewId();
+            return customerBO.generateNewId();
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new id " + e.getMessage()).show();
         } catch (ClassNotFoundException e) {
